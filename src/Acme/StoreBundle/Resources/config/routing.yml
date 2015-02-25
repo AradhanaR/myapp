@@ -1,0 +1,11 @@
+acme_store_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: AcmeStoreBundle:Default:index }
+
+index:
+    path:     loginpage
+    defaults: { _controller: AcmeStoreBundle:Login:index }
+
+authenticate:
+    path:     authenticate
+    defaults: { _controller: AcmeStoreBundle:Login:authenticate }

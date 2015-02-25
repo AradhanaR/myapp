@@ -2,4 +2,4 @@ _assetic:
     resource: .
     type: assetic
 _app:
-    resource: 'D:\php\myapp\app/config/routing_dev.yml'
+    resource: /private/var/www/projects/app2/app/config/routing_dev.yml

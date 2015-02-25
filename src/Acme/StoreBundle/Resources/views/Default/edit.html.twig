@@ -1,0 +1,25 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Propel Application{% endblock %}
+
+{% block body %}
+ {{parent()}}
+ <h3> {{ name }} </h3>
+
+ 	{% if name == 'Add Form' %}
+		<form action="{{ path('newproduct') }}" method="post" {{ form_enctype(form) }}>
+		    {{ form_widget(form) }}
+
+		    <input type="submit" />
+		</form>
+	{% else %}
+
+		<form action="{{ path('editproduct', {'id': product.id} ) }}" method="post" {{ form_enctype(form) }}>
+		    {{ form_widget(form) }}
+
+		    <input type="submit" />
+		</form>
+
+	{% endif %}
+  <a href="{{ path('homepage')}}">Back to homepage</a>
+{% endblock %}

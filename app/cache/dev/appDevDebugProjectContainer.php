@@ -25,7 +25,7 @@ class appDevDebugProjectContainer extends Container
     public function __construct()
     {
         $dir = __DIR__;
-        for ($i = 1; $i <= 3; ++$i) {
+        for ($i = 1; $i <= 5; ++$i) {
             $this->targetDirs[$i] = $dir = dirname($dir);
         }
         $this->parameters = $this->getDefaultParameters();
@@ -118,6 +118,7 @@ class appDevDebugProjectContainer extends Container
             'form.type_extension.repeated.validator' => 'getForm_TypeExtension_Repeated_ValidatorService',
             'form.type_extension.submit.validator' => 'getForm_TypeExtension_Submit_ValidatorService',
             'form.type_guesser.doctrine' => 'getForm_TypeGuesser_DoctrineService',
+            'form.type_guesser.propel' => 'getForm_TypeGuesser_PropelService',
             'form.type_guesser.validator' => 'getForm_TypeGuesser_ValidatorService',
             'fragment.handler' => 'getFragment_HandlerService',
             'fragment.listener' => 'getFragment_ListenerService',
@@ -138,6 +139,7 @@ class appDevDebugProjectContainer extends Container
             'monolog.logger.event' => 'getMonolog_Logger_EventService',
             'monolog.logger.php' => 'getMonolog_Logger_PhpService',
             'monolog.logger.profiler' => 'getMonolog_Logger_ProfilerService',
+            'monolog.logger.propel' => 'getMonolog_Logger_PropelService',
             'monolog.logger.request' => 'getMonolog_Logger_RequestService',
             'monolog.logger.router' => 'getMonolog_Logger_RouterService',
             'monolog.logger.security' => 'getMonolog_Logger_SecurityService',
@@ -145,6 +147,12 @@ class appDevDebugProjectContainer extends Container
             'monolog.logger.translation' => 'getMonolog_Logger_TranslationService',
             'profiler' => 'getProfilerService',
             'profiler_listener' => 'getProfilerListenerService',
+            'propel.build_properties' => 'getPropel_BuildPropertiesService',
+            'propel.configuration' => 'getPropel_ConfigurationService',
+            'propel.converter.propel.orm' => 'getPropel_Converter_Propel_OrmService',
+            'propel.form.type.model' => 'getPropel_Form_Type_ModelService',
+            'propel.logger' => 'getPropel_LoggerService',
+            'propel.twig.extension.syntax' => 'getPropel_Twig_Extension_SyntaxService',
             'property_accessor' => 'getPropertyAccessorService',
             'request' => 'getRequestService',
             'request_stack' => 'getRequestStackService',
@@ -154,17 +162,24 @@ class appDevDebugProjectContainer extends Container
             'router_listener' => 'getRouterListenerService',
             'routing.loader' => 'getRouting_LoaderService',
             'security.access.decision_manager' => 'getSecurity_Access_DecisionManagerService',
+            'security.access_listener' => 'getSecurity_AccessListenerService',
+            'security.access_map' => 'getSecurity_AccessMapService',
             'security.authentication.manager' => 'getSecurity_Authentication_ManagerService',
+            'security.authentication.session_strategy' => 'getSecurity_Authentication_SessionStrategyService',
             'security.authentication.trust_resolver' => 'getSecurity_Authentication_TrustResolverService',
             'security.authentication_utils' => 'getSecurity_AuthenticationUtilsService',
             'security.authorization_checker' => 'getSecurity_AuthorizationCheckerService',
+            'security.channel_listener' => 'getSecurity_ChannelListenerService',
             'security.context' => 'getSecurity_ContextService',
             'security.csrf.token_manager' => 'getSecurity_Csrf_TokenManagerService',
             'security.encoder_factory' => 'getSecurity_EncoderFactoryService',
             'security.firewall' => 'getSecurity_FirewallService',
+            'security.firewall.map.context.default' => 'getSecurity_Firewall_Map_Context_DefaultService',
             'security.firewall.map.context.demo_login' => 'getSecurity_Firewall_Map_Context_DemoLoginService',
             'security.firewall.map.context.demo_secured_area' => 'getSecurity_Firewall_Map_Context_DemoSecuredAreaService',
             'security.firewall.map.context.dev' => 'getSecurity_Firewall_Map_Context_DevService',
+            'security.firewall.map.context.main' => 'getSecurity_Firewall_Map_Context_MainService',
+            'security.http_utils' => 'getSecurity_HttpUtilsService',
             'security.password_encoder' => 'getSecurity_PasswordEncoderService',
             'security.rememberme.response_listener' => 'getSecurity_Rememberme_ResponseListenerService',
             'security.role_hierarchy' => 'getSecurity_RoleHierarchyService',
@@ -638,7 +653,7 @@ class appDevDebugProjectContainer extends Container
         $b = new \Doctrine\DBAL\Configuration();
         $b->setSQLLogger($a);
 
-        return $this->services['doctrine.dbal.default_connection'] = $this->get('doctrine.dbal.connection_factory')->createConnection(array('driver' => 'pdo_mysql', 'host' => '127.0.0.1', 'port' => NULL, 'dbname' => 'symfony', 'user' => 'root', 'password' => NULL, 'charset' => 'UTF8', 'driverOptions' => array()), $b, new \Symfony\Bridge\Doctrine\ContainerAwareEventManager($this), array());
+        return $this->services['doctrine.dbal.default_connection'] = $this->get('doctrine.dbal.connection_factory')->createConnection(array('driver' => 'pdo_mysql', 'host' => 'localhost', 'port' => 3306, 'dbname' => 'app2', 'user' => 'root', 'password' => 'asd', 'charset' => 'UTF8', 'driverOptions' => array()), $b, new \Symfony\Bridge\Doctrine\ContainerAwareEventManager($this), array());
     }
 
     /**
@@ -736,7 +751,7 @@ class appDevDebugProjectContainer extends Container
     {
         $this->services['doctrine_cache.providers.doctrine.orm.default_metadata_cache'] = $instance = new \Doctrine\Common\Cache\ArrayCache();
 
-        $instance->setNamespace('sf2orm_default_cf33dc5f239ff36a2a1a124ef3e1c8ccc57cc5e801a81d17ca50e1a862ce420f');
+        $instance->setNamespace('sf2orm_default_f4817dce975780a613e8c1dd180e4ba87d79a46dbd77f4da72cfc85368f4f3ea');
 
         return $instance;
     }
@@ -753,7 +768,7 @@ class appDevDebugProjectContainer extends Container
     {
         $this->services['doctrine_cache.providers.doctrine.orm.default_query_cache'] = $instance = new \Doctrine\Common\Cache\ArrayCache();
 
-        $instance->setNamespace('sf2orm_default_cf33dc5f239ff36a2a1a124ef3e1c8ccc57cc5e801a81d17ca50e1a862ce420f');
+        $instance->setNamespace('sf2orm_default_f4817dce975780a613e8c1dd180e4ba87d79a46dbd77f4da72cfc85368f4f3ea');
 
         return $instance;
     }
@@ -770,7 +785,7 @@ class appDevDebugProjectContainer extends Container
     {
         $this->services['doctrine_cache.providers.doctrine.orm.default_result_cache'] = $instance = new \Doctrine\Common\Cache\ArrayCache();
 
-        $instance->setNamespace('sf2orm_default_cf33dc5f239ff36a2a1a124ef3e1c8ccc57cc5e801a81d17ca50e1a862ce420f');
+        $instance->setNamespace('sf2orm_default_f4817dce975780a613e8c1dd180e4ba87d79a46dbd77f4da72cfc85368f4f3ea');
 
         return $instance;
     }
@@ -837,7 +852,7 @@ class appDevDebugProjectContainer extends Container
      */
     protected function getForm_RegistryService()
     {
-        return $this->services['form.registry'] = new \Symfony\Component\Form\FormRegistry(array(0 => new \Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension($this, array('form' => 'form.type.form', 'birthday' => 'form.type.birthday', 'checkbox' => 'form.type.checkbox', 'choice' => 'form.type.choice', 'collection' => 'form.type.collection', 'country' => 'form.type.country', 'date' => 'form.type.date', 'datetime' => 'form.type.datetime', 'email' => 'form.type.email', 'file' => 'form.type.file', 'hidden' => 'form.type.hidden', 'integer' => 'form.type.integer', 'language' => 'form.type.language', 'locale' => 'form.type.locale', 'money' => 'form.type.money', 'number' => 'form.type.number', 'password' => 'form.type.password', 'percent' => 'form.type.percent', 'radio' => 'form.type.radio', 'repeated' => 'form.type.repeated', 'search' => 'form.type.search', 'textarea' => 'form.type.textarea', 'text' => 'form.type.text', 'time' => 'form.type.time', 'timezone' => 'form.type.timezone', 'url' => 'form.type.url', 'button' => 'form.type.button', 'submit' => 'form.type.submit', 'reset' => 'form.type.reset', 'currency' => 'form.type.currency', 'entity' => 'form.type.entity'), array('form' => array(0 => 'form.type_extension.form.http_foundation', 1 => 'form.type_extension.form.validator', 2 => 'form.type_extension.csrf', 3 => 'form.type_extension.form.data_collector'), 'repeated' => array(0 => 'form.type_extension.repeated.validator'), 'submit' => array(0 => 'form.type_extension.submit.validator')), array(0 => 'form.type_guesser.validator', 1 => 'form.type_guesser.doctrine'))), $this->get('form.resolved_type_factory'));
+        return $this->services['form.registry'] = new \Symfony\Component\Form\FormRegistry(array(0 => new \Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension($this, array('form' => 'form.type.form', 'birthday' => 'form.type.birthday', 'checkbox' => 'form.type.checkbox', 'choice' => 'form.type.choice', 'collection' => 'form.type.collection', 'country' => 'form.type.country', 'date' => 'form.type.date', 'datetime' => 'form.type.datetime', 'email' => 'form.type.email', 'file' => 'form.type.file', 'hidden' => 'form.type.hidden', 'integer' => 'form.type.integer', 'language' => 'form.type.language', 'locale' => 'form.type.locale', 'money' => 'form.type.money', 'number' => 'form.type.number', 'password' => 'form.type.password', 'percent' => 'form.type.percent', 'radio' => 'form.type.radio', 'repeated' => 'form.type.repeated', 'search' => 'form.type.search', 'textarea' => 'form.type.textarea', 'text' => 'form.type.text', 'time' => 'form.type.time', 'timezone' => 'form.type.timezone', 'url' => 'form.type.url', 'button' => 'form.type.button', 'submit' => 'form.type.submit', 'reset' => 'form.type.reset', 'currency' => 'form.type.currency', 'entity' => 'form.type.entity', 'model' => 'propel.form.type.model'), array('form' => array(0 => 'form.type_extension.form.http_foundation', 1 => 'form.type_extension.form.validator', 2 => 'form.type_extension.csrf', 3 => 'form.type_extension.form.data_collector'), 'repeated' => array(0 => 'form.type_extension.repeated.validator'), 'submit' => array(0 => 'form.type_extension.submit.validator')), array(0 => 'form.type_guesser.validator', 1 => 'form.type_guesser.doctrine', 2 => 'form.type_guesser.propel'))), $this->get('form.resolved_type_factory'));
     }
 
     /**
@@ -1348,6 +1363,19 @@ class appDevDebugProjectContainer extends Container
     }
 
     /**
+     * Gets the 'form.type_guesser.propel' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return \Symfony\Bridge\Propel1\Form\PropelTypeGuesser A Symfony\Bridge\Propel1\Form\PropelTypeGuesser instance.
+     */
+    protected function getForm_TypeGuesser_PropelService()
+    {
+        return $this->services['form.type_guesser.propel'] = new \Symfony\Bridge\Propel1\Form\PropelTypeGuesser();
+    }
+
+    /**
      * Gets the 'form.type_guesser.validator' service.
      *
      * This service is shared.
@@ -1568,7 +1596,7 @@ class appDevDebugProjectContainer extends Container
      */
     protected function getMonolog_Handler_MainService()
     {
-        return $this->services['monolog.handler.main'] = new \Monolog\Handler\StreamHandler(($this->targetDirs[2].'\\logs/dev.log'), 100, true, NULL);
+        return $this->services['monolog.handler.main'] = new \Monolog\Handler\StreamHandler(($this->targetDirs[2].'/logs/dev.log'), 100, true, NULL);
     }
 
     /**
@@ -1658,6 +1686,25 @@ class appDevDebugProjectContainer extends Container
     protected function getMonolog_Logger_ProfilerService()
     {
         $this->services['monolog.logger.profiler'] = $instance = new \Symfony\Bridge\Monolog\Logger('profiler');
+
+        $instance->pushHandler($this->get('monolog.handler.console'));
+        $instance->pushHandler($this->get('monolog.handler.main'));
+        $instance->pushHandler($this->get('monolog.handler.debug'));
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'monolog.logger.propel' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return \Symfony\Bridge\Monolog\Logger A Symfony\Bridge\Monolog\Logger instance.
+     */
+    protected function getMonolog_Logger_PropelService()
+    {
+        $this->services['monolog.logger.propel'] = $instance = new \Symfony\Bridge\Monolog\Logger('propel');
 
         $instance->pushHandler($this->get('monolog.handler.console'));
         $instance->pushHandler($this->get('monolog.handler.main'));
@@ -1797,6 +1844,7 @@ class appDevDebugProjectContainer extends Container
         $instance->add(new \Symfony\Bundle\SecurityBundle\DataCollector\SecurityDataCollector($this->get('security.token_storage', ContainerInterface::NULL_ON_INVALID_REFERENCE)));
         $instance->add(new \Symfony\Bundle\SwiftmailerBundle\DataCollector\MessageDataCollector($this));
         $instance->add($d);
+        $instance->add(new \Symfony\Bridge\Propel1\DataCollector\PropelDataCollector($this->get('propel.logger'), $this->get('propel.configuration')));
         $instance->add($this->get('data_collector.dump'));
 
         return $instance;
@@ -1813,6 +1861,88 @@ class appDevDebugProjectContainer extends Container
     protected function getProfilerListenerService()
     {
         return $this->services['profiler_listener'] = new \Symfony\Component\HttpKernel\EventListener\ProfilerListener($this->get('profiler'), NULL, false, false, $this->get('request_stack'));
+    }
+
+    /**
+     * Gets the 'propel.build_properties' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return \Propel\PropelBundle\DependencyInjection\Properties A Propel\PropelBundle\DependencyInjection\Properties instance.
+     */
+    protected function getPropel_BuildPropertiesService()
+    {
+        return $this->services['propel.build_properties'] = new \Propel\PropelBundle\DependencyInjection\Properties(array());
+    }
+
+    /**
+     * Gets the 'propel.configuration' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return \PropelConfiguration A PropelConfiguration instance.
+     */
+    protected function getPropel_ConfigurationService()
+    {
+        return $this->services['propel.configuration'] = new \PropelConfiguration(array('datasources' => array('default' => array('adapter' => 'mysql', 'connection' => array('dsn' => 'mysql:host=localhost;dbname=app2;charset=UTF8', 'user' => 'root', 'password' => 'asd', 'classname' => 'DebugPDO', 'options' => array(), 'attributes' => array(), 'settings' => array())))));
+    }
+
+    /**
+     * Gets the 'propel.converter.propel.orm' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return \Propel\PropelBundle\Request\ParamConverter\PropelParamConverter A Propel\PropelBundle\Request\ParamConverter\PropelParamConverter instance.
+     */
+    protected function getPropel_Converter_Propel_OrmService()
+    {
+        $this->services['propel.converter.propel.orm'] = $instance = new \Propel\PropelBundle\Request\ParamConverter\PropelParamConverter();
+
+        $instance->setRouter($this->get('router', ContainerInterface::NULL_ON_INVALID_REFERENCE));
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'propel.form.type.model' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return \Symfony\Bridge\Propel1\Form\Type\ModelType A Symfony\Bridge\Propel1\Form\Type\ModelType instance.
+     */
+    protected function getPropel_Form_Type_ModelService()
+    {
+        return $this->services['propel.form.type.model'] = new \Symfony\Bridge\Propel1\Form\Type\ModelType();
+    }
+
+    /**
+     * Gets the 'propel.logger' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return \Symfony\Bridge\Propel1\Logger\PropelLogger A Symfony\Bridge\Propel1\Logger\PropelLogger instance.
+     */
+    protected function getPropel_LoggerService()
+    {
+        return $this->services['propel.logger'] = new \Symfony\Bridge\Propel1\Logger\PropelLogger($this->get('monolog.logger.propel', ContainerInterface::NULL_ON_INVALID_REFERENCE), $this->get('debug.stopwatch', ContainerInterface::NULL_ON_INVALID_REFERENCE));
+    }
+
+    /**
+     * Gets the 'propel.twig.extension.syntax' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return \Propel\PropelBundle\Twig\Extension\SyntaxExtension A Propel\PropelBundle\Twig\Extension\SyntaxExtension instance.
+     */
+    protected function getPropel_Twig_Extension_SyntaxService()
+    {
+        return $this->services['propel.twig.extension.syntax'] = new \Propel\PropelBundle\Twig\Extension\SyntaxExtension();
     }
 
     /**
@@ -2000,7 +2130,26 @@ class appDevDebugProjectContainer extends Container
      */
     protected function getSecurity_FirewallService()
     {
-        return $this->services['security.firewall'] = new \Symfony\Component\Security\Http\Firewall(new \Symfony\Bundle\SecurityBundle\Security\FirewallMap($this, array('security.firewall.map.context.dev' => new \Symfony\Component\HttpFoundation\RequestMatcher('^/(_(profiler|wdt)|css|images|js)/'), 'security.firewall.map.context.demo_login' => new \Symfony\Component\HttpFoundation\RequestMatcher('^/demo/secured/login$'), 'security.firewall.map.context.demo_secured_area' => new \Symfony\Component\HttpFoundation\RequestMatcher('^/demo/secured/'))), $this->get('debug.event_dispatcher'));
+        return $this->services['security.firewall'] = new \Symfony\Component\Security\Http\Firewall(new \Symfony\Bundle\SecurityBundle\Security\FirewallMap($this, array('security.firewall.map.context.main' => NULL, 'security.firewall.map.context.default' => NULL, 'security.firewall.map.context.dev' => new \Symfony\Component\HttpFoundation\RequestMatcher('^/(_(profiler|wdt)|css|images|js)/'), 'security.firewall.map.context.demo_login' => new \Symfony\Component\HttpFoundation\RequestMatcher('^/demo/secured/login$'), 'security.firewall.map.context.demo_secured_area' => new \Symfony\Component\HttpFoundation\RequestMatcher('^/demo/secured/'))), $this->get('debug.event_dispatcher'));
+    }
+
+    /**
+     * Gets the 'security.firewall.map.context.default' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return \Symfony\Bundle\SecurityBundle\Security\FirewallContext A Symfony\Bundle\SecurityBundle\Security\FirewallContext instance.
+     */
+    protected function getSecurity_Firewall_Map_Context_DefaultService()
+    {
+        $a = $this->get('security.context');
+        $b = $this->get('monolog.logger.security', ContainerInterface::NULL_ON_INVALID_REFERENCE);
+        $c = $this->get('security.authentication.manager');
+
+        $d = new \Symfony\Component\Security\Http\EntryPoint\BasicAuthenticationEntryPoint('Secured Area');
+
+        return $this->services['security.firewall.map.context.default'] = new \Symfony\Bundle\SecurityBundle\Security\FirewallContext(array(0 => $this->get('security.channel_listener'), 1 => new \Symfony\Component\Security\Http\Firewall\ContextListener($a, array(0 => $this->get('security.user.provider.concrete.in_memory')), 'default', $b, $this->get('debug.event_dispatcher', ContainerInterface::NULL_ON_INVALID_REFERENCE)), 2 => new \Symfony\Component\Security\Http\Firewall\BasicAuthenticationListener($a, $c, 'default', $d, $b), 3 => new \Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener($a, '54edbba90d3f1', $b, $c), 4 => $this->get('security.access_listener')), new \Symfony\Component\Security\Http\Firewall\ExceptionListener($a, $this->get('security.authentication.trust_resolver'), $this->get('security.http_utils'), 'default', $d, NULL, NULL, $b));
     }
 
     /**
@@ -2026,28 +2175,23 @@ class appDevDebugProjectContainer extends Container
      */
     protected function getSecurity_Firewall_Map_Context_DemoSecuredAreaService()
     {
-        $a = $this->get('monolog.logger.security', ContainerInterface::NULL_ON_INVALID_REFERENCE);
-        $b = $this->get('security.context');
+        $a = $this->get('security.context');
+        $b = $this->get('monolog.logger.security', ContainerInterface::NULL_ON_INVALID_REFERENCE);
         $c = $this->get('debug.event_dispatcher', ContainerInterface::NULL_ON_INVALID_REFERENCE);
-        $d = $this->get('router', ContainerInterface::NULL_ON_INVALID_REFERENCE);
+        $d = $this->get('security.http_utils');
         $e = $this->get('http_kernel');
-        $f = $this->get('security.authentication.manager');
 
-        $g = new \Symfony\Component\Security\Http\AccessMap();
+        $f = new \Symfony\Component\Security\Http\Firewall\LogoutListener($a, $d, new \Symfony\Component\Security\Http\Logout\DefaultLogoutSuccessHandler($d, '_demo'), array('csrf_parameter' => '_csrf_token', 'intention' => 'logout', 'logout_path' => '_demo_logout'));
+        $f->addHandler(new \Symfony\Component\Security\Http\Logout\SessionLogoutHandler());
 
-        $h = new \Symfony\Component\Security\Http\HttpUtils($d, $d);
+        $g = new \Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler($d, array());
+        $g->setOptions(array('login_path' => '_demo_login', 'always_use_default_target_path' => false, 'default_target_path' => '/', 'target_path_parameter' => '_target_path', 'use_referer' => false));
+        $g->setProviderKey('demo_secured_area');
 
-        $i = new \Symfony\Component\Security\Http\Firewall\LogoutListener($b, $h, new \Symfony\Component\Security\Http\Logout\DefaultLogoutSuccessHandler($h, '_demo'), array('csrf_parameter' => '_csrf_token', 'intention' => 'logout', 'logout_path' => '_demo_logout'));
-        $i->addHandler(new \Symfony\Component\Security\Http\Logout\SessionLogoutHandler());
+        $h = new \Symfony\Component\Security\Http\Authentication\DefaultAuthenticationFailureHandler($e, $d, array(), $b);
+        $h->setOptions(array('login_path' => '_demo_login', 'failure_path' => NULL, 'failure_forward' => false, 'failure_path_parameter' => '_failure_path'));
 
-        $j = new \Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler($h, array());
-        $j->setOptions(array('login_path' => '_demo_login', 'always_use_default_target_path' => false, 'default_target_path' => '/', 'target_path_parameter' => '_target_path', 'use_referer' => false));
-        $j->setProviderKey('demo_secured_area');
-
-        $k = new \Symfony\Component\Security\Http\Authentication\DefaultAuthenticationFailureHandler($e, $h, array(), $a);
-        $k->setOptions(array('login_path' => '_demo_login', 'failure_path' => NULL, 'failure_forward' => false, 'failure_path_parameter' => '_failure_path'));
-
-        return $this->services['security.firewall.map.context.demo_secured_area'] = new \Symfony\Bundle\SecurityBundle\Security\FirewallContext(array(0 => new \Symfony\Component\Security\Http\Firewall\ChannelListener($g, new \Symfony\Component\Security\Http\EntryPoint\RetryAuthenticationEntryPoint(80, 443), $a), 1 => new \Symfony\Component\Security\Http\Firewall\ContextListener($b, array(0 => $this->get('security.user.provider.concrete.in_memory')), 'demo_secured_area', $a, $c), 2 => $i, 3 => new \Symfony\Component\Security\Http\Firewall\UsernamePasswordFormAuthenticationListener($b, $f, new \Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy('migrate'), $h, 'demo_secured_area', $j, $k, array('check_path' => '_demo_security_check', 'use_forward' => false, 'require_previous_session' => true, 'username_parameter' => '_username', 'password_parameter' => '_password', 'csrf_parameter' => '_csrf_token', 'intention' => 'authenticate', 'post_only' => true), $a, $c, NULL), 4 => new \Symfony\Component\Security\Http\Firewall\AccessListener($b, $this->get('security.access.decision_manager'), $g, $f)), new \Symfony\Component\Security\Http\Firewall\ExceptionListener($b, $this->get('security.authentication.trust_resolver'), $h, 'demo_secured_area', new \Symfony\Component\Security\Http\EntryPoint\FormAuthenticationEntryPoint($e, $h, '_demo_login', false), NULL, NULL, $a));
+        return $this->services['security.firewall.map.context.demo_secured_area'] = new \Symfony\Bundle\SecurityBundle\Security\FirewallContext(array(0 => $this->get('security.channel_listener'), 1 => new \Symfony\Component\Security\Http\Firewall\ContextListener($a, array(0 => $this->get('security.user.provider.concrete.in_memory')), 'demo_secured_area', $b, $c), 2 => $f, 3 => new \Symfony\Component\Security\Http\Firewall\UsernamePasswordFormAuthenticationListener($a, $this->get('security.authentication.manager'), $this->get('security.authentication.session_strategy'), $d, 'demo_secured_area', $g, $h, array('check_path' => '_demo_security_check', 'use_forward' => false, 'require_previous_session' => true, 'username_parameter' => '_username', 'password_parameter' => '_password', 'csrf_parameter' => '_csrf_token', 'intention' => 'authenticate', 'post_only' => true), $b, $c, NULL), 4 => $this->get('security.access_listener')), new \Symfony\Component\Security\Http\Firewall\ExceptionListener($a, $this->get('security.authentication.trust_resolver'), $d, 'demo_secured_area', new \Symfony\Component\Security\Http\EntryPoint\FormAuthenticationEntryPoint($e, $d, '_demo_login', false), NULL, NULL, $b));
     }
 
     /**
@@ -2061,6 +2205,32 @@ class appDevDebugProjectContainer extends Container
     protected function getSecurity_Firewall_Map_Context_DevService()
     {
         return $this->services['security.firewall.map.context.dev'] = new \Symfony\Bundle\SecurityBundle\Security\FirewallContext(array(), NULL);
+    }
+
+    /**
+     * Gets the 'security.firewall.map.context.main' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return \Symfony\Bundle\SecurityBundle\Security\FirewallContext A Symfony\Bundle\SecurityBundle\Security\FirewallContext instance.
+     */
+    protected function getSecurity_Firewall_Map_Context_MainService()
+    {
+        $a = $this->get('security.context');
+        $b = $this->get('monolog.logger.security', ContainerInterface::NULL_ON_INVALID_REFERENCE);
+        $c = $this->get('debug.event_dispatcher', ContainerInterface::NULL_ON_INVALID_REFERENCE);
+        $d = $this->get('security.http_utils');
+        $e = $this->get('http_kernel');
+
+        $f = new \Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler($d, array());
+        $f->setOptions(array('default_target_path' => 'default_security_target', 'always_use_default_target_path' => true, 'use_referer' => true, 'login_path' => '/login', 'target_path_parameter' => '_target_path'));
+        $f->setProviderKey('main');
+
+        $g = new \Symfony\Component\Security\Http\Authentication\DefaultAuthenticationFailureHandler($e, $d, array(), $b);
+        $g->setOptions(array('login_path' => '/login', 'failure_path' => NULL, 'failure_forward' => false, 'failure_path_parameter' => '_failure_path'));
+
+        return $this->services['security.firewall.map.context.main'] = new \Symfony\Bundle\SecurityBundle\Security\FirewallContext(array(0 => $this->get('security.channel_listener'), 1 => new \Symfony\Component\Security\Http\Firewall\ContextListener($a, array(0 => $this->get('security.user.provider.concrete.in_memory')), 'main', $b, $c), 2 => new \Symfony\Component\Security\Http\Firewall\UsernamePasswordFormAuthenticationListener($a, $this->get('security.authentication.manager'), $this->get('security.authentication.session_strategy'), $d, 'main', $f, $g, array('check_path' => '/login_check', 'use_forward' => false, 'require_previous_session' => true, 'username_parameter' => '_username', 'password_parameter' => '_password', 'csrf_parameter' => '_csrf_token', 'intention' => 'authenticate', 'post_only' => true), $b, $c, NULL), 3 => $this->get('security.access_listener')), new \Symfony\Component\Security\Http\Firewall\ExceptionListener($a, $this->get('security.authentication.trust_resolver'), $d, 'main', new \Symfony\Component\Security\Http\EntryPoint\FormAuthenticationEntryPoint($e, $d, '/login', false), NULL, NULL, $b));
     }
 
     /**
@@ -2251,6 +2421,7 @@ class appDevDebugProjectContainer extends Container
 
         $instance->add($this->get('sensio_framework_extra.converter.doctrine.orm'), 0, 'doctrine.orm');
         $instance->add($this->get('sensio_framework_extra.converter.datetime'), 0, 'datetime');
+        $instance->add($this->get('propel.converter.propel.orm'), 1, 'propel');
 
         return $instance;
     }
@@ -3163,6 +3334,7 @@ class appDevDebugProjectContainer extends Container
         $instance->addExtension(new \Twig_Extension_Debug());
         $instance->addExtension(new \Symfony\Bundle\AsseticBundle\Twig\AsseticExtension($this->get('assetic.asset_factory'), $this->get('templating.name_parser'), true, array(), array(), new \Symfony\Bundle\AsseticBundle\DefaultValueSupplier($this)));
         $instance->addExtension(new \Doctrine\Bundle\DoctrineBundle\Twig\DoctrineExtension());
+        $instance->addExtension($this->get('propel.twig.extension.syntax'));
         $instance->addExtension(new \Symfony\Bridge\Twig\Extension\DumpExtension($this->get('var_dumper.cloner')));
         $instance->addExtension($this->get('twig.extension.acme.demo'));
         $instance->addExtension(new \Symfony\Bundle\WebProfilerBundle\Twig\WebProfilerExtension());
@@ -3222,17 +3394,19 @@ class appDevDebugProjectContainer extends Container
     {
         $this->services['twig.loader'] = $instance = new \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader($this->get('templating.locator'), $this->get('templating.name_parser'));
 
-        $instance->addPath(($this->targetDirs[3].'\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\FrameworkBundle/Resources/views'), 'Framework');
-        $instance->addPath(($this->targetDirs[3].'\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\SecurityBundle/Resources/views'), 'Security');
-        $instance->addPath(($this->targetDirs[3].'\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\TwigBundle/Resources/views'), 'Twig');
-        $instance->addPath(($this->targetDirs[3].'\\vendor\\symfony\\swiftmailer-bundle/Resources/views'), 'Swiftmailer');
-        $instance->addPath(($this->targetDirs[3].'\\vendor\\doctrine\\doctrine-bundle/Resources/views'), 'Doctrine');
-        $instance->addPath(($this->targetDirs[3].'\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\DebugBundle/Resources/views'), 'Debug');
-        $instance->addPath(($this->targetDirs[3].'\\src\\Acme\\DemoBundle/Resources/views'), 'AcmeDemo');
-        $instance->addPath(($this->targetDirs[3].'\\vendor\\symfony\\symfony\\src\\Symfony\\Bundle\\WebProfilerBundle/Resources/views'), 'WebProfiler');
-        $instance->addPath(($this->targetDirs[3].'\\vendor\\sensio\\distribution-bundle\\Sensio\\Bundle\\DistributionBundle/Resources/views'), 'SensioDistribution');
+        $instance->addPath(($this->targetDirs[3].'/vendor/symfony/symfony/src/Symfony/Bundle/FrameworkBundle/Resources/views'), 'Framework');
+        $instance->addPath(($this->targetDirs[3].'/vendor/symfony/symfony/src/Symfony/Bundle/SecurityBundle/Resources/views'), 'Security');
+        $instance->addPath(($this->targetDirs[3].'/vendor/symfony/symfony/src/Symfony/Bundle/TwigBundle/Resources/views'), 'Twig');
+        $instance->addPath(($this->targetDirs[3].'/vendor/symfony/swiftmailer-bundle/Resources/views'), 'Swiftmailer');
+        $instance->addPath(($this->targetDirs[3].'/vendor/doctrine/doctrine-bundle/Resources/views'), 'Doctrine');
+        $instance->addPath(($this->targetDirs[3].'/src/Acme/StoreBundle/Resources/views'), 'AcmeStore');
+        $instance->addPath(($this->targetDirs[3].'/vendor/propel/propel-bundle/Propel/PropelBundle/Resources/views'), 'Propel');
+        $instance->addPath(($this->targetDirs[3].'/vendor/symfony/symfony/src/Symfony/Bundle/DebugBundle/Resources/views'), 'Debug');
+        $instance->addPath(($this->targetDirs[3].'/src/Acme/DemoBundle/Resources/views'), 'AcmeDemo');
+        $instance->addPath(($this->targetDirs[3].'/vendor/symfony/symfony/src/Symfony/Bundle/WebProfilerBundle/Resources/views'), 'WebProfiler');
+        $instance->addPath(($this->targetDirs[3].'/vendor/sensio/distribution-bundle/Sensio/Bundle/DistributionBundle/Resources/views'), 'SensioDistribution');
         $instance->addPath(($this->targetDirs[2].'/Resources/views'));
-        $instance->addPath(($this->targetDirs[3].'\\vendor\\symfony\\symfony\\src\\Symfony\\Bridge\\Twig/Resources/views/Form'));
+        $instance->addPath(($this->targetDirs[3].'/vendor/symfony/symfony/src/Symfony/Bridge/Twig/Resources/views/Form'));
 
         return $instance;
     }
@@ -3260,7 +3434,7 @@ class appDevDebugProjectContainer extends Container
      */
     protected function getUriSignerService()
     {
-        return $this->services['uri_signer'] = new \Symfony\Component\HttpKernel\UriSigner('9c3ac589ad097cf663598275779f95755f035b51');
+        return $this->services['uri_signer'] = new \Symfony\Component\HttpKernel\UriSigner('ab2118d3eb6bf3c5a70c818da82d4b681802fe58');
     }
 
     /**
@@ -3291,7 +3465,7 @@ class appDevDebugProjectContainer extends Container
         $instance->setConstraintValidatorFactory(new \Symfony\Bundle\FrameworkBundle\Validator\ConstraintValidatorFactory($this, array('validator.expression' => 'validator.expression', 'Symfony\\Component\\Validator\\Constraints\\EmailValidator' => 'validator.email', 'security.validator.user_password' => 'security.validator.user_password', 'doctrine.orm.validator.unique' => 'doctrine.orm.validator.unique')));
         $instance->setTranslator($this->get('translator'));
         $instance->setTranslationDomain('validators');
-        $instance->addXmlMappings(array(0 => ($this->targetDirs[3].'\\vendor\\symfony\\symfony\\src\\Symfony\\Component\\Form/Resources/config/validation.xml')));
+        $instance->addXmlMappings(array(0 => ($this->targetDirs[3].'/vendor/symfony/symfony/src/Symfony/Component/Form/Resources/config/validation.xml')));
         $instance->enableAnnotationMapping($this->get('annotation_reader'));
         $instance->addMethodMapping('loadValidatorMetadata');
         $instance->setApiVersion(3);
@@ -3367,7 +3541,7 @@ class appDevDebugProjectContainer extends Container
      */
     protected function getWebProfiler_Controller_ProfilerService()
     {
-        return $this->services['web_profiler.controller.profiler'] = new \Symfony\Bundle\WebProfilerBundle\Controller\ProfilerController($this->get('router', ContainerInterface::NULL_ON_INVALID_REFERENCE), $this->get('profiler', ContainerInterface::NULL_ON_INVALID_REFERENCE), $this->get('twig'), array('data_collector.form' => array(0 => 'form', 1 => '@WebProfiler/Collector/form.html.twig'), 'data_collector.config' => array(0 => 'config', 1 => '@WebProfiler/Collector/config.html.twig'), 'data_collector.request' => array(0 => 'request', 1 => '@WebProfiler/Collector/request.html.twig'), 'data_collector.ajax' => array(0 => 'ajax', 1 => '@WebProfiler/Collector/ajax.html.twig'), 'data_collector.exception' => array(0 => 'exception', 1 => '@WebProfiler/Collector/exception.html.twig'), 'data_collector.events' => array(0 => 'events', 1 => '@WebProfiler/Collector/events.html.twig'), 'data_collector.logger' => array(0 => 'logger', 1 => '@WebProfiler/Collector/logger.html.twig'), 'data_collector.time' => array(0 => 'time', 1 => '@WebProfiler/Collector/time.html.twig'), 'data_collector.memory' => array(0 => 'memory', 1 => '@WebProfiler/Collector/memory.html.twig'), 'data_collector.router' => array(0 => 'router', 1 => '@WebProfiler/Collector/router.html.twig'), 'data_collector.security' => array(0 => 'security', 1 => '@Security/Collector/security.html.twig'), 'swiftmailer.data_collector' => array(0 => 'swiftmailer', 1 => '@Swiftmailer/Collector/swiftmailer.html.twig'), 'data_collector.doctrine' => array(0 => 'db', 1 => '@Doctrine/Collector/db.html.twig'), 'data_collector.dump' => array(0 => 'dump', 1 => '@Debug/Profiler/dump.html.twig')), 'bottom');
+        return $this->services['web_profiler.controller.profiler'] = new \Symfony\Bundle\WebProfilerBundle\Controller\ProfilerController($this->get('router', ContainerInterface::NULL_ON_INVALID_REFERENCE), $this->get('profiler', ContainerInterface::NULL_ON_INVALID_REFERENCE), $this->get('twig'), array('data_collector.form' => array(0 => 'form', 1 => '@WebProfiler/Collector/form.html.twig'), 'data_collector.config' => array(0 => 'config', 1 => '@WebProfiler/Collector/config.html.twig'), 'data_collector.request' => array(0 => 'request', 1 => '@WebProfiler/Collector/request.html.twig'), 'data_collector.ajax' => array(0 => 'ajax', 1 => '@WebProfiler/Collector/ajax.html.twig'), 'data_collector.exception' => array(0 => 'exception', 1 => '@WebProfiler/Collector/exception.html.twig'), 'data_collector.events' => array(0 => 'events', 1 => '@WebProfiler/Collector/events.html.twig'), 'data_collector.logger' => array(0 => 'logger', 1 => '@WebProfiler/Collector/logger.html.twig'), 'data_collector.time' => array(0 => 'time', 1 => '@WebProfiler/Collector/time.html.twig'), 'data_collector.memory' => array(0 => 'memory', 1 => '@WebProfiler/Collector/memory.html.twig'), 'data_collector.router' => array(0 => 'router', 1 => '@WebProfiler/Collector/router.html.twig'), 'data_collector.security' => array(0 => 'security', 1 => '@Security/Collector/security.html.twig'), 'swiftmailer.data_collector' => array(0 => 'swiftmailer', 1 => '@Swiftmailer/Collector/swiftmailer.html.twig'), 'data_collector.doctrine' => array(0 => 'db', 1 => '@Doctrine/Collector/db.html.twig'), 'propel.data_collector' => array(0 => 'propel', 1 => 'PropelBundle:Collector:propel'), 'data_collector.dump' => array(0 => 'dump', 1 => '@Debug/Profiler/dump.html.twig')), 'bottom');
     }
 
     /**
@@ -3506,6 +3680,44 @@ class appDevDebugProjectContainer extends Container
     }
 
     /**
+     * Gets the 'security.access_listener' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * This service is private.
+     * If you want to be able to request this service from the container directly,
+     * make it public, otherwise you might end up with broken code.
+     *
+     * @return \Symfony\Component\Security\Http\Firewall\AccessListener A Symfony\Component\Security\Http\Firewall\AccessListener instance.
+     */
+    protected function getSecurity_AccessListenerService()
+    {
+        return $this->services['security.access_listener'] = new \Symfony\Component\Security\Http\Firewall\AccessListener($this->get('security.context'), $this->get('security.access.decision_manager'), $this->get('security.access_map'), $this->get('security.authentication.manager'));
+    }
+
+    /**
+     * Gets the 'security.access_map' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * This service is private.
+     * If you want to be able to request this service from the container directly,
+     * make it public, otherwise you might end up with broken code.
+     *
+     * @return \Symfony\Component\Security\Http\AccessMap A Symfony\Component\Security\Http\AccessMap instance.
+     */
+    protected function getSecurity_AccessMapService()
+    {
+        $this->services['security.access_map'] = $instance = new \Symfony\Component\Security\Http\AccessMap();
+
+        $instance->add(new \Symfony\Component\HttpFoundation\RequestMatcher('^/login'), array(0 => 'IS_AUTHENTICATED_ANONYMOUSLY'), 'https');
+
+        return $instance;
+    }
+
+    /**
      * Gets the 'security.authentication.manager' service.
      *
      * This service is shared.
@@ -3519,11 +3731,33 @@ class appDevDebugProjectContainer extends Container
      */
     protected function getSecurity_Authentication_ManagerService()
     {
-        $this->services['security.authentication.manager'] = $instance = new \Symfony\Component\Security\Core\Authentication\AuthenticationProviderManager(array(0 => new \Symfony\Component\Security\Core\Authentication\Provider\DaoAuthenticationProvider($this->get('security.user.provider.concrete.in_memory'), new \Symfony\Component\Security\Core\User\UserChecker(), 'demo_secured_area', $this->get('security.encoder_factory'), true)), true);
+        $a = $this->get('security.user.provider.concrete.in_memory');
+        $b = $this->get('security.encoder_factory');
+
+        $c = new \Symfony\Component\Security\Core\User\UserChecker();
+
+        $this->services['security.authentication.manager'] = $instance = new \Symfony\Component\Security\Core\Authentication\AuthenticationProviderManager(array(0 => new \Symfony\Component\Security\Core\Authentication\Provider\DaoAuthenticationProvider($a, $c, 'main', $b, true), 1 => new \Symfony\Component\Security\Core\Authentication\Provider\DaoAuthenticationProvider($a, $c, 'default', $b, true), 2 => new \Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider('54edbba90d3f1'), 3 => new \Symfony\Component\Security\Core\Authentication\Provider\DaoAuthenticationProvider($a, $c, 'demo_secured_area', $b, true)), true);
 
         $instance->setEventDispatcher($this->get('debug.event_dispatcher'));
 
         return $instance;
+    }
+
+    /**
+     * Gets the 'security.authentication.session_strategy' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * This service is private.
+     * If you want to be able to request this service from the container directly,
+     * make it public, otherwise you might end up with broken code.
+     *
+     * @return \Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy A Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy instance.
+     */
+    protected function getSecurity_Authentication_SessionStrategyService()
+    {
+        return $this->services['security.authentication.session_strategy'] = new \Symfony\Component\Security\Http\Session\SessionAuthenticationStrategy('migrate');
     }
 
     /**
@@ -3541,6 +3775,42 @@ class appDevDebugProjectContainer extends Container
     protected function getSecurity_Authentication_TrustResolverService()
     {
         return $this->services['security.authentication.trust_resolver'] = new \Symfony\Component\Security\Core\Authentication\AuthenticationTrustResolver('Symfony\\Component\\Security\\Core\\Authentication\\Token\\AnonymousToken', 'Symfony\\Component\\Security\\Core\\Authentication\\Token\\RememberMeToken');
+    }
+
+    /**
+     * Gets the 'security.channel_listener' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * This service is private.
+     * If you want to be able to request this service from the container directly,
+     * make it public, otherwise you might end up with broken code.
+     *
+     * @return \Symfony\Component\Security\Http\Firewall\ChannelListener A Symfony\Component\Security\Http\Firewall\ChannelListener instance.
+     */
+    protected function getSecurity_ChannelListenerService()
+    {
+        return $this->services['security.channel_listener'] = new \Symfony\Component\Security\Http\Firewall\ChannelListener($this->get('security.access_map'), new \Symfony\Component\Security\Http\EntryPoint\RetryAuthenticationEntryPoint(80, 443), $this->get('monolog.logger.security', ContainerInterface::NULL_ON_INVALID_REFERENCE));
+    }
+
+    /**
+     * Gets the 'security.http_utils' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * This service is private.
+     * If you want to be able to request this service from the container directly,
+     * make it public, otherwise you might end up with broken code.
+     *
+     * @return \Symfony\Component\Security\Http\HttpUtils A Symfony\Component\Security\Http\HttpUtils instance.
+     */
+    protected function getSecurity_HttpUtilsService()
+    {
+        $a = $this->get('router', ContainerInterface::NULL_ON_INVALID_REFERENCE);
+
+        return $this->services['security.http_utils'] = new \Symfony\Component\Security\Http\HttpUtils($a, $a);
     }
 
     /**
@@ -3724,7 +3994,7 @@ class appDevDebugProjectContainer extends Container
             'kernel.debug' => true,
             'kernel.name' => 'app',
             'kernel.cache_dir' => __DIR__,
-            'kernel.logs_dir' => ($this->targetDirs[2].'\\logs'),
+            'kernel.logs_dir' => ($this->targetDirs[2].'/logs'),
             'kernel.bundles' => array(
                 'FrameworkBundle' => 'Symfony\\Bundle\\FrameworkBundle\\FrameworkBundle',
                 'SecurityBundle' => 'Symfony\\Bundle\\SecurityBundle\\SecurityBundle',
@@ -3735,6 +4005,8 @@ class appDevDebugProjectContainer extends Container
                 'DoctrineBundle' => 'Doctrine\\Bundle\\DoctrineBundle\\DoctrineBundle',
                 'SensioFrameworkExtraBundle' => 'Sensio\\Bundle\\FrameworkExtraBundle\\SensioFrameworkExtraBundle',
                 'AppBundle' => 'AppBundle\\AppBundle',
+                'AcmeStoreBundle' => 'Acme\\StoreBundle\\AcmeStoreBundle',
+                'PropelBundle' => 'Propel\\PropelBundle\\PropelBundle',
                 'DebugBundle' => 'Symfony\\Bundle\\DebugBundle\\DebugBundle',
                 'AcmeDemoBundle' => 'Acme\\DemoBundle\\AcmeDemoBundle',
                 'WebProfilerBundle' => 'Symfony\\Bundle\\WebProfilerBundle\\WebProfilerBundle',
@@ -3744,17 +4016,17 @@ class appDevDebugProjectContainer extends Container
             'kernel.charset' => 'UTF-8',
             'kernel.container_class' => 'appDevDebugProjectContainer',
             'database_driver' => 'pdo_mysql',
-            'database_host' => '127.0.0.1',
-            'database_port' => NULL,
-            'database_name' => 'symfony',
+            'database_host' => 'localhost',
+            'database_port' => 3306,
+            'database_name' => 'app2',
             'database_user' => 'root',
-            'database_password' => NULL,
+            'database_password' => 'asd',
             'mailer_transport' => 'smtp',
             'mailer_host' => '127.0.0.1',
             'mailer_user' => NULL,
             'mailer_password' => NULL,
             'locale' => 'en',
-            'secret' => '9c3ac589ad097cf663598275779f95755f035b51',
+            'secret' => 'ab2118d3eb6bf3c5a70c818da82d4b681802fe58',
             'controller_resolver.class' => 'Symfony\\Bundle\\FrameworkBundle\\Controller\\ControllerResolver',
             'controller_name_converter.class' => 'Symfony\\Bundle\\FrameworkBundle\\Controller\\ControllerNameParser',
             'response_listener.class' => 'Symfony\\Component\\HttpKernel\\EventListener\\ResponseListener',
@@ -3803,7 +4075,7 @@ class appDevDebugProjectContainer extends Container
             'translation.extractor.class' => 'Symfony\\Component\\Translation\\Extractor\\ChainExtractor',
             'translation.writer.class' => 'Symfony\\Component\\Translation\\Writer\\TranslationWriter',
             'property_accessor.class' => 'Symfony\\Component\\PropertyAccess\\PropertyAccessor',
-            'kernel.secret' => '9c3ac589ad097cf663598275779f95755f035b51',
+            'kernel.secret' => 'ab2118d3eb6bf3c5a70c818da82d4b681802fe58',
             'kernel.http_method_override' => true,
             'kernel.trusted_hosts' => array(
 
@@ -4193,9 +4465,9 @@ class appDevDebugProjectContainer extends Container
 
             ),
             'assetic.java.bin' => '/usr/bin/java',
-            'assetic.node.bin' => '/usr/bin/node',
-            'assetic.ruby.bin' => 'C:\\RailsInstaller\\Ruby2.0.0\\bin\\ruby.EXE',
-            'assetic.sass.bin' => 'C:\\RailsInstaller\\Ruby2.0.0\\bin\\sass.BAT',
+            'assetic.node.bin' => '/usr/local/bin/node',
+            'assetic.ruby.bin' => '/usr/bin/ruby',
+            'assetic.sass.bin' => '/usr/bin/sass',
             'assetic.filter.cssrewrite.class' => 'Assetic\\Filter\\CssRewriteFilter',
             'assetic.twig_extension.functions' => array(
 
@@ -4315,6 +4587,20 @@ class appDevDebugProjectContainer extends Container
             'sensio_framework_extra.converter.doctrine.class' => 'Sensio\\Bundle\\FrameworkExtraBundle\\Request\\ParamConverter\\DoctrineParamConverter',
             'sensio_framework_extra.converter.datetime.class' => 'Sensio\\Bundle\\FrameworkExtraBundle\\Request\\ParamConverter\\DateTimeParamConverter',
             'sensio_framework_extra.view.listener.class' => 'Sensio\\Bundle\\FrameworkExtraBundle\\EventListener\\TemplateListener',
+            'propel.path' => ($this->targetDirs[2].'/../vendor/propel/propel1'),
+            'propel.phing_path' => ($this->targetDirs[2].'/../vendor/phing/phing/classes'),
+            'propel.logging' => true,
+            'propel.dbal.default_connection' => 'default',
+            'propel.configuration.class' => 'PropelConfiguration',
+            'propel.logger.class' => 'Symfony\\Bridge\\Propel1\\Logger\\PropelLogger',
+            'propel.data_collector.class' => 'Symfony\\Bridge\\Propel1\\DataCollector\\PropelDataCollector',
+            'propel.build_properties.class' => 'Propel\\PropelBundle\\DependencyInjection\\Properties',
+            'propel.form.type.model.class' => 'Symfony\\Bridge\\Propel1\\Form\\Type\\ModelType',
+            'propel.twig.extension.syntax.class' => 'Propel\\PropelBundle\\Twig\\Extension\\SyntaxExtension',
+            'form.type_guesser.propel.class' => 'Symfony\\Bridge\\Propel1\\Form\\PropelTypeGuesser',
+            'propel.security.acl.provider.model.class' => 'Propel\\PropelBundle\\Security\\Acl\\AuditableAclProvider',
+            'propel.security.user.provider.class' => 'Symfony\\Bridge\\Propel1\\Security\\User\\PropelUserProvider',
+            'propel.converter.propel.class' => 'Propel\\PropelBundle\\Request\\ParamConverter\\PropelParamConverter',
             'web_profiler.controller.profiler.class' => 'Symfony\\Bundle\\WebProfilerBundle\\Controller\\ProfilerController',
             'web_profiler.controller.router.class' => 'Symfony\\Bundle\\WebProfilerBundle\\Controller\\RouterController',
             'web_profiler.controller.exception.class' => 'Symfony\\Bundle\\WebProfilerBundle\\Controller\\ExceptionController',
@@ -4380,6 +4666,10 @@ class appDevDebugProjectContainer extends Container
                 'data_collector.doctrine' => array(
                     0 => 'db',
                     1 => '@Doctrine/Collector/db.html.twig',
+                ),
+                'propel.data_collector' => array(
+                    0 => 'propel',
+                    1 => 'PropelBundle:Collector:propel',
                 ),
                 'data_collector.dump' => array(
                     0 => 'dump',

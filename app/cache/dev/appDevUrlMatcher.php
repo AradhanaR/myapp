@@ -127,9 +127,71 @@ class appDevUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirectab
 
         }
 
+        // acme_store_homepage
+        if (0 === strpos($pathinfo, '/hello') && preg_match('#^/hello/(?P<name>[^/]++)$#s', $pathinfo, $matches)) {
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'acme_store_homepage')), array (  '_controller' => 'Acme\\StoreBundle\\Controller\\DefaultController::indexAction',));
+        }
+
+        // index
+        if ($pathinfo === '/loginpage') {
+            return array (  '_controller' => 'Acme\\StoreBundle\\Controller\\LoginController::indexAction',  '_route' => 'index',);
+        }
+
+        // authenticate
+        if ($pathinfo === '/authenticate') {
+            return array (  '_controller' => 'Acme\\StoreBundle\\Controller\\LoginController::authenticateAction',  '_route' => 'authenticate',);
+        }
+
+        // create
+        if (rtrim($pathinfo, '/') === '/create') {
+            if (substr($pathinfo, -1) !== '/') {
+                return $this->redirect($pathinfo.'/', 'create');
+            }
+
+            return array (  '_controller' => 'Acme\\StoreBundle\\Controller\\DefaultController::createAction',  'name' => 'TEST create OPERATIONS',  '_route' => 'create',);
+        }
+
         // homepage
-        if ($pathinfo === '/app/example') {
-            return array (  '_controller' => 'AppBundle\\Controller\\DefaultController::indexAction',  '_route' => 'homepage',);
+        if (rtrim($pathinfo, '/') === '') {
+            if (substr($pathinfo, -1) !== '/') {
+                return $this->redirect($pathinfo.'/', 'homepage');
+            }
+
+            return array (  '_controller' => 'Acme\\StoreBundle\\Controller\\DefaultController::indexAction',  'name' => 'TEST CRUD OPERATIONS',  '_route' => 'homepage',);
+        }
+
+        // update
+        if (0 === strpos($pathinfo, '/update') && preg_match('#^/update/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'update')), array (  '_controller' => 'Acme\\StoreBundle\\Controller\\DefaultController::updateAction',  'name' => 'TEST UPDATE OPERATIONS',));
+        }
+
+        // show
+        if (0 === strpos($pathinfo, '/show') && preg_match('#^/show/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'show')), array (  '_controller' => 'Acme\\StoreBundle\\Controller\\DefaultController::showAction',  'name' => 'TEST SHOW OPERATIONS',));
+        }
+
+        // delete
+        if (0 === strpos($pathinfo, '/delete') && preg_match('#^/delete/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'delete')), array (  '_controller' => 'Acme\\StoreBundle\\Controller\\DefaultController::deleteAction',  'name' => 'TEST DELETE OPERATIONS',));
+        }
+
+        // editproduct
+        if (0 === strpos($pathinfo, '/edit') && preg_match('#^/edit/(?P<id>\\d+)$#s', $pathinfo, $matches)) {
+            return $this->mergeDefaults(array_replace($matches, array('_route' => 'editproduct')), array (  '_controller' => 'Acme\\StoreBundle\\Controller\\DefaultController::editAction',  'name' => 'TEST Edit OPERATIONS',));
+        }
+
+        // newproduct
+        if (rtrim($pathinfo, '/') === '/new') {
+            if (substr($pathinfo, -1) !== '/') {
+                return $this->redirect($pathinfo.'/', 'newproduct');
+            }
+
+            return array (  '_controller' => 'Acme\\StoreBundle\\Controller\\DefaultController::newAction',  'name' => 'TEST Add OPERATIONS',  '_route' => 'newproduct',);
+        }
+
+        // loginpage
+        if ($pathinfo === '/login') {
+            return array (  '_controller' => 'Acme\\StoreBundle\\Controller\\LoginController::indexAction',  '_route' => 'loginpage',);
         }
 
         // _welcome

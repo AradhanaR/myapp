@@ -1,0 +1,38 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Propel Application{% endblock %}
+
+{% block body %}
+
+
+
+ {{parent()}}
+ <h3> {{ name }} </h3> 
+
+ 	<p> <a href="{{ path('loginpage')}}">Login here</a></p>
+ 	<p>List of Products<p>  <p ><span><a href="{{ path('newproduct')}}">Add</a></span></p> <br/> <br>
+ 	<p ><span><a href="{{ path('create')}}">Auto create</a></span></p> <br/> <br>
+
+ 		<table width="55%">
+ 		<tr>
+	 		<th width="10%" align="center">ID</th>
+	 		<th width="60%" align="center">Name</th>
+	 		<th width="60%" align="center">Price</th>
+	 		<th width="30%" align="center">Action</th>
+ 		</tr>
+ 		{% for product in  productlist %}
+			<tr>
+				<td align="center">{{product.id}}</td>
+				<td align="center">{{product.name}}</td>
+				<td align="center">{{product.price}}</td>
+				<td >
+				<ul>
+			 	<li><a href="{{ path('show', {'id': product.id})}}">Show Details</a></li>
+			 	<li><a href="{{ path('editproduct', {'id': product.id})}}">Edit</a></li>
+			 	<li><a href="{{ path('delete',{'id': product.id}) }}">Delete</a></li>
+			 	</ul>
+			 	</td>
+			</tr>
+		{% endfor %}
+		</table>
+{% endblock %}

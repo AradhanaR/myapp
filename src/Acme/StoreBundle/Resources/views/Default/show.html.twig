@@ -1,0 +1,16 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}Propel Application{% endblock %}
+
+{% block body %}
+ {{parent()}}
+
+ 	<h3>Product Details </h3>
+	{{ dump(product) }}
+
+ 	<div><span>Product Name:</span> {{product.name}}</div>
+ 	<div><span>Product Description:</span> {{product.description}}</div>
+ 	<div><span>Price: </span> {{product.price}}</div>
+
+ <a href="{{ path('homepage')}}">Back to homepage</a>
+{% endblock %}

@@ -1,3 +1,52 @@
+acme_store:
+    resource: "@AcmeStoreBundle/Resources/config/routing.yml"
+    prefix:   /
+
 app:
     resource: @AppBundle/Controller/
     type:     annotation
+
+create:
+    path:      /create/
+    defaults:
+        _controller: AcmeStoreBundle:Default:create
+        name: "TEST create OPERATIONS"
+homepage:
+    path:      /
+    defaults:
+        _controller: AcmeStoreBundle:Default:index
+        name: "TEST CRUD OPERATIONS"
+update:
+    path:      /update/{id}
+    defaults:
+        _controller: AcmeStoreBundle:Default:update
+        name: "TEST UPDATE OPERATIONS"
+show:
+    path:      /show/{id}
+    defaults:
+        _controller: AcmeStoreBundle:Default:show
+        name: "TEST SHOW OPERATIONS"
+delete:
+    path:      /delete/{id}
+    defaults:
+        _controller: AcmeStoreBundle:Default:delete
+        name: "TEST DELETE OPERATIONS"
+editproduct:
+    path:      /edit/{id}
+    defaults:
+        _controller: AcmeStoreBundle:Default:edit
+        name: "TEST Edit OPERATIONS"
+    requirements:
+        id:  \d+
+newproduct:
+    path:      /new/
+    defaults:
+        _controller: AcmeStoreBundle:Default:new
+        name: "TEST Add OPERATIONS"
+loginpage:
+    path:   /login
+    defaults:
+        _controller: AcmeStoreBundle:Login:index
+
+
+
